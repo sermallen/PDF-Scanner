@@ -9,6 +9,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 
 public class PDF_Scanner {
+    // TODO: ruta del fichero como parametro de entrada
     final static String INPUT_FILE = "resources\\pdfs\\04.pdf";
     public static void main(String[] args) {
         // abrir fichero
@@ -33,11 +34,11 @@ public class PDF_Scanner {
         // sacar contenido ...
         List<Content> contenido = new ArrayList<>();
 
-        // for (PDPage page : doc.getPages()) {
-        //     contenido.addAll(textAndFormat.getContenido(page));
-        // }
+        for (PDPage page : doc.getPages()) {
+            contenido.addAll(textAndFormat.getContenido(page));
+        }
 
-        contenido.addAll(textAndFormat.getContenido(doc.getPage(0)));
+        // contenido.addAll(textAndFormat.getContenido(doc.getPage(0)));
 
         toFile.toFile(contenido.toString(), "output\\content.txt");
 
