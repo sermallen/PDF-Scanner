@@ -1,33 +1,44 @@
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.pdfbox.pdmodel.PDPage;
 
+// Tf: tamaño de la fuente
+// Td: posicion
+// RG/rg: colores de la fuente
+// Tm: matriz de posicion y orientacion
+// TL: leading
+// Tc: espacio de caracteres
+
 public class textAndFormat {
+    // TODO: comprobar que BT y ET no están entre parentesis o corchetes
     private static final Pattern patronBTET = Pattern.compile("BT(.*?)ET", Pattern.DOTALL);
+    private static final Pattern patronFormato = Pattern.compile("(\\/F\\d+ )(\\d+\\.?\\d*) Tf (.*?)(?=\\/F|$)", Pattern.DOTALL);
     // private static final Pattern patronFormato = Pattern.compile("(\\/F\\d+)?(.*?)(\\[.*?\\]?TJ)+?", Pattern.DOTALL);
-    private static final Pattern patronFormato = Pattern.compile("(\\/F\\d+)(.*?)(?=\\/F|$)", Pattern.DOTALL);
 
-    public static List<String> getContenido (PDPage page){
-
-        byte[] tx;
+    public static List<Content> getContenido (PDPage page){
+        String str = "";
         try {
-            tx = page.getContents().readAllBytes();
+            InputStream input = page.getContents();
+            int tam = input.available();
+            while (tam > 0) {
+                str += new String(input.readNBytes(tam), StandardCharsets.UTF_8); // TODO: investigar charsets
+                tam = input.available();
+            }
         } catch (IOException e) {
             System.err.println("Error al obtener el contenido de la pagina");
             return null;
         }
 
-        String str = new String(tx, StandardCharsets.UTF_8);
-        // str = str.replace('\n', ' ');
-        str = Arrays.toString(getTagValues(str, patronBTET).toArray());
+        str = str.replace('\n', ' ');
+        List<String> list = getTagValues(str, patronBTET);
         
-        return getContent(str, patronFormato);
+        return getContent(list.toString(), patronFormato);
     }
 
     private static List<String> getTagValues(String str, Pattern patron) {
@@ -39,52 +50,12 @@ public class textAndFormat {
         return tagValues;
     }
 
-    private static List<String> getContent(String str, Pattern patron) {
-        final List<String> tagValues = new ArrayList<String>();
+    private static List<Content> getContent(String str, Pattern patron) {
+        final List<Content> tagValues = new ArrayList<Content>();
         final Matcher matcher = patron.matcher(str);
         while (matcher.find()) {
-            tagValues.add(matcher.group(1) + " : { " + matcher.group(2) + " }\n");
+            tagValues.add(new Content (matcher.group(1), matcher.group(2), matcher.group(3)));
         }
         return tagValues;
-    }
-}
-
-class Content {
-    String format;
-    String parameters;
-    String values;
-
-    public Content() {
-    }
-
-    public Content(String format, String parameters, String value) {
-    }
-    
-    public String getFormat() {
-        return format;
-    }
-
-    public String getParameters() {
-        return parameters;
-    }
-
-    public String getValues() {
-        return values;
-    }
-
-    public void setFormat(String format) {
-        this.format = format;
-    }
-
-    public void setParameters(String parameters) {
-        this.parameters = parameters;
-    }
-
-    public void setValues(String values) {
-        this.values = values;
-    }
-
-    public String toString() {
-        return format + ": {" + parameters + " " + values + "}";
     }
 }
