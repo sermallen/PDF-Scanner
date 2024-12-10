@@ -9,9 +9,15 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 
 public class PDF_Scanner {
-    // TODO: ruta del fichero como parametro de entrada
-    final static String INPUT_FILE = "resources\\pdfs\\04.pdf";
+    // final static String INPUT_FILE = "resources\\pdfs\\04.pdf";
+
     public static void main(String[] args) {
+        if (args.length != 1) {
+            System.err.println("Tiene que proporcionar una unica ruta.");
+            return;
+        }
+        String INPUT_FILE = args[0];
+
         // abrir fichero
         File file = new File(INPUT_FILE);
         PDDocument doc;
@@ -24,12 +30,14 @@ public class PDF_Scanner {
 
         // sacar titulo
         String titulo = title.getTitle(doc);
+        System.out.println("Titulo: " + titulo);
 
         // sacar estructura
         // String estructura = tree.getTree(doc);
 
         // fuentes
         HashMap<String, String[]> fuentes = fonts.getFuentes(doc);
+        toFile.toFile(fuentes.toString(), "output\\fuentes.txt");
 
         // sacar contenido ...
         List<Content> contenido = new ArrayList<>();
