@@ -12,4 +12,5 @@ El porgrama actualmente genera un ficheros en la carpeta `output`: `content.txt`
 > **Nota:** Puede ser que el texto sin procesar esté en HEX o contenga caracteres desconocidos.
 
 
-El programa guarda en memoria una lista de las fuentes utilizadas y el *outline* con la posición de sección. Esto se utilizará en el futuro para diferenciar entre las secciones.
+El programa guarda en memoria una lista de las fuentes utilizadas. Actualmente se escribe por salida estándar el *outline* con la posición de la sección y la página. Esto se utilizará en el futuro para diferenciar entre las secciones.
+También se escribe por salida estándar elttitulo del artículo, si está disponible.

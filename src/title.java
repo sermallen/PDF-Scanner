@@ -11,8 +11,7 @@ public class title {
         } 
         // TODO: comprobar tags de accesibilidad, si el primero es unico podria ser el titulo
         else {
-            System.out.println("Titulo no disponible");
-            return "";
+            return "Titulo no disponible";
         }
     } 
 }

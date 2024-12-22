@@ -34,6 +34,8 @@ public class PDF_Scanner {
 
         // sacar estructura
         // String estructura = tree.getTree(doc);
+        ArrayList<Estructura> outline = PDFDestinationExtractor.getEstructura(doc);
+        System.out.println(outline);
 
         // fuentes
         HashMap<String, String[]> fuentes = fonts.getFuentes(doc);
